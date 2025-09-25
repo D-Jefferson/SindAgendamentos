@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, Calendar, Search} from 'lucide-react';
+import { Home, Calendar, Search, BarChart3 } from 'lucide-react';
 import { useApp } from '../contexts/AppContext';
 import '../styles/menu.css';
 
@@ -10,6 +10,7 @@ export function Menu() {
     { id: 'home', label: 'Início', icon: Home },
     { id: 'agendar', label: 'Agendar', icon: Calendar },
     { id: 'consultar', label: 'Consultar', icon: Search },
+    { id: 'admin', label: 'Admin', icon: BarChart3 },
   ];
 
   const handleNavigation = (viewId: string) => {

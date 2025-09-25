@@ -69,14 +69,8 @@ export function AgendarForm() {
       return;
     }
 
-    const novoAgendamento: Agendamento = {
-      id: Date.now().toString(),
-      ...formData,
-      status: 'agendado',
-      criadoEm: new Date().toISOString()
-    };
 
-    setAgendamentos([...agendamentos, novoAgendamento]);
+    setAgendamentos([...agendamentos]);
 
     setShowSuccess(true);
     setTimeout(() => {
@@ -457,7 +451,7 @@ useEffect(() => {
                       className="termos-link"
                       onClick={() => setShowTermsPopup(true)}
                     >
-                      termos e condições
+                      Termos e Condições
                     </button>
                   </span>
                 </label>

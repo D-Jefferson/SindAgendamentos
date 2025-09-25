@@ -5,10 +5,11 @@ import { Menu } from './components/Menu';
 import { Home } from './components/Home';
 import { AgendarForm } from './components/AgendarForm';
 import { ConsultarAgendamentos } from './components/ConsultarAgendamentos';
-import { AdminPanel } from './components/AdminPanel';
+import { AdminLogin } from './components/AdminLogin';
+//import { AdminPanel } from './components/AdminPanel';
 
 function AppContent() {
-  const { currentView } = useApp();
+  const { currentView, isAdminLoggedIn } = useApp();
 
   const renderCurrentView = () => {
     switch (currentView) {
@@ -19,7 +20,7 @@ function AppContent() {
       case 'consultar':
         return <ConsultarAgendamentos />;
       case 'admin':
-        return <AdminPanel />;
+        return /*isAdminLoggedIn ? <AdminPanel /> : */<AdminLogin />;
       default:
         return <Home />;
     }
@@ -35,7 +36,7 @@ function AppContent() {
         </main>
       </div>
       
-      <style jsx>{`
+      <style>{`
         .app-container {
           min-height: 100vh;
           background-color: #f3f4f6;

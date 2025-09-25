@@ -9,6 +9,8 @@ interface AppContextType {
   setCurrentView: (view: string) => void;
   isMenuOpen: boolean;
   setIsMenuOpen: (open: boolean) => void;
+  isAdminLoggedIn: boolean;
+  setIsAdminLoggedIn: (loggedIn: boolean) => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -17,6 +19,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [agendamentos, setAgendamentos] = useLocalStorage<Agendamento[]>('agendamentos', []);
   const [currentView, setCurrentView] = useLocalStorage('currentView', 'home');
   const [isMenuOpen, setIsMenuOpen] = useLocalStorage('isMenuOpen', false);
+  const [isAdminLoggedIn, setIsAdminLoggedIn] = useLocalStorage('isAdminLoggedIn', false);
 
   return (
     <AppContext.Provider
@@ -27,6 +30,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
         setCurrentView,
         isMenuOpen,
         setIsMenuOpen,
+        isAdminLoggedIn,
+        setIsAdminLoggedIn,
       }}
     >
       {children}
