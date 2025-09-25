@@ -11,7 +11,6 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  max-width: 72rem;
   width: 100%;
   margin: 0 auto; 
   padding: 0 1rem;
@@ -54,7 +53,7 @@
 
 .menu-button {
     padding: 0.5rem;
-    color: white;
+    color: rgb(80, 80, 80);
     background: none;
     border: none;
     border-radius: 0.5rem;

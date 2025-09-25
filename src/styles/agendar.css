@@ -5,7 +5,6 @@
     align-items: center;
     justify-content: center;
     padding: 1rem;
-    
 }
     
 .success-card {
@@ -51,13 +50,152 @@
     color: #6b7280;
 }
 
-.form-container {
-    min-height: 100vh;
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
     background-image: url('https://frotas.localiza.com/wp-content/uploads/maos-no-volante-dirigindo-carro-na-estrada.jpg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    box-shadow: 10px 10px 30px rgba(0, 0, 0, 0.5);
+}
+    
+.popup-container {
+    background-color: white;
+    border-radius: 1rem;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    max-width: 28rem;
+    width: 100%;
+    animation: popupSlideIn 0.3s ease-out;
+}
+    
+@keyframes popupSlideIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9) translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+    }
+    
+.popup-content {
+    padding: 2rem;
+    text-align: center;
+}
+    
+.popup-icon {
+    width: 4rem;
+    height: 4rem;
+    background-color: #fee2e2;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    color: #dc2626;
+}
+    
+.popup-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #1f2937;
+    margin-bottom: 1.5rem;
+}
+    
+.popup-message {
+    text-align: left;
+    margin-bottom: 2rem;
+}
+    
+.popup-text {
+    color: #4b5563;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+}
+    
+.popup-text:last-child {
+    margin-bottom: 0;
+}
+    
+.popup-highlight {
+    background-color: #fef3c7;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    border-left: 4px solid #f59e0b;
+}
+    
+.popup-button {
+    width: 100%;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+    
+.popup-button-enabled {
+    background-color: #dc2626;
+    color: white;
+}
+    
+.popup-button-enabled:hover {
+    background-color: #b91c1c;
+    transform: scale(1.02);
+}
+    
+.popup-button-disabled {
+    background-color: #d1d5db;
+    color: #6b7280;
+    cursor: not-allowed;
+}
+    
+.popup-timer {
+    margin-top: 1rem;
+    width: 100%;
+    height: 4px;
+    background-color: #e5e7eb;
+    border-radius: 2px;
+    overflow: hidden;
+}
+    
+.timer-bar {
+    height: 100%;
+    background-color: #dc2626;
+    width: 0%;
+    animation: timerProgress 3s linear forwards;
+}
+    
+@keyframes timerProgress {
+    from {
+        width: 0%;
+    }
+    to {
+        width: 100%;
+    }
+    }
+
+.form-container {
+    min-height: 100vh;
+    background-color: #f9fafb;
     padding: 2rem 0;
+    background-image: url('https://frotas.localiza.com/wp-content/uploads/maos-no-volante-dirigindo-carro-na-estrada.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    padding-top: 70px;
 }
 
 .form-wrapper {
@@ -210,4 +348,20 @@
     .form-row {
     grid-template-columns: 1fr 1fr;
     }
+}
+
+.termos-link {
+  background-color: #d32f2f;
+  color: #fff;
+  border: none;
+  padding: 4px 10px;
+  border-radius: 7px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
+
+.termos-link:hover {
+  background-color: #b71c1c;
 }

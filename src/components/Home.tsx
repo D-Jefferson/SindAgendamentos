@@ -2,6 +2,7 @@ import React from 'react';
 import { Calendar, Search } from 'lucide-react';
 import { useApp } from '../contexts/AppContext';
 import '../styles/home.css';
+import titulo from "../assets/titulo.png";
 
 export function Home() {
   const { setCurrentView } = useApp();
@@ -14,7 +15,7 @@ export function Home() {
         <div className="home-content">
           <div className="home-text">
             <h1 className="home-title">
-              <img src=".\src\assents\titulo.png" alt="test" style={{ width: "350px", height: "auto" }}/>
+              <img src={titulo} alt="test" style={{ width: "350px", height: "auto" }}/>
             </h1>
           </div>
 
