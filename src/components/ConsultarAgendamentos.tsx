@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { Search, ArrowLeft, Calendar, Clock, User, Phone, Mail, FileText } from 'lucide-react';
+import { 
+  Search, ArrowLeft, Calendar, Clock, User, Phone, Mail, FileText 
+} from 'lucide-react';
 import { useApp } from '../contexts/AppContext';
 import '../styles/consulta.css';
 
@@ -11,14 +13,10 @@ export function ConsultarAgendamentos() {
 
   const handleConsultar = (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Simular busca por CPF (na prática, você buscaria por CPF no banco de dados)
-    // Por enquanto, vamos buscar por nome que contenha parte do CPF digitado
-    const resultados = agendamentos.filter(agendamento => 
-      agendamento.telefone.includes(cpf.replace(/\D/g, '')) || 
+    const resultados = agendamentos.filter(agendamento =>
+      agendamento.telefone.includes(cpf.replace(/\D/g, '')) ||
       agendamento.nome.toLowerCase().includes(cpf.toLowerCase())
     );
-    
     setAgendamentosEncontrados(resultados);
     setConsultaRealizada(true);
   };
@@ -65,20 +63,29 @@ export function ConsultarAgendamentos() {
   };
 
   return (
-    <>
-      <div className="consultar-container">
+    <div className="consultar-container">
+      <div className="consultar-left">
+        <h1 className="consultar-highlight">
+          Aqui você pode <br />
+          <span>consultar seus agendamentos</span>
+        </h1>
+      </div>
+
+      <div className="consultar-right">
         <div className="consultar-wrapper">
           <div className="consultar-card">
             <div className="consultar-header">
-              <button
-                onClick={() => setCurrentView('home')}
+              <button 
+                onClick={() => setCurrentView('home')} 
                 className="back-button"
               >
                 <ArrowLeft size={20} />
                 <span>Voltar</span>
               </button>
               <h1 className="consultar-title">Consultar Agendamentos</h1>
-              <p className="consultar-subtitle">Digite seu CPF para consultar seus agendamentos</p>
+              <p className="consultar-subtitle">
+                Digite seu CPF para consultar seus agendamentos
+              </p>
             </div>
 
             <div className="consultar-body">
@@ -100,7 +107,6 @@ export function ConsultarAgendamentos() {
                         placeholder="000.000.000-00"
                       />
                     </div>
-                    
                     <button
                       type="submit"
                       className="consultar-button"
@@ -115,13 +121,12 @@ export function ConsultarAgendamentos() {
                 <div className="resultados-container">
                   <div className="resultados-header">
                     <h2 className="resultados-title">
-                      {agendamentosEncontrados.length > 0 
+                      {agendamentosEncontrados.length > 0
                         ? `${agendamentosEncontrados.length} agendamento(s) encontrado(s)`
-                        : 'Nenhum agendamento encontrado'
-                      }
+                        : 'Nenhum agendamento encontrado'}
                     </h2>
-                    <button
-                      onClick={novaConsulta}
+                    <button 
+                      onClick={novaConsulta} 
                       className="nova-consulta-button"
                     >
                       Nova Consulta
@@ -150,7 +155,9 @@ export function ConsultarAgendamentos() {
                                 <p className="agendamento-servico">{agendamento.servico}</p>
                               </div>
                             </div>
-                            <span className={`status-badge ${getStatusColor(agendamento.status)}`}>
+                            <span 
+                              className={`status-badge ${getStatusColor(agendamento.status)}`}
+                            >
                               {getStatusLabel(agendamento.status)}
                             </span>
                           </div>
@@ -195,6 +202,6 @@ export function ConsultarAgendamentos() {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }
