@@ -1,8 +1,10 @@
 import React, { useState, useEffect  } from 'react';
 import { MapPin, Calendar, Clock, User, Phone, Mail, FileText, ArrowLeft, Check } from 'lucide-react';
 import { useApp } from '../contexts/AppContext';
-import { Agendamento } from '../types';
 import '../styles/agendar.css';
+import InfoPopup from "../components/Popup/InfoPopup";
+import TermsPopup from "../components/Popup/TermosPopup"; 
+
 
 const somenteDigitos = (v: string) => v.replace(/\D/g, "");
 
@@ -61,23 +63,55 @@ export function AgendarForm() {
     }
   }, [showInfoPopup]);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
 
-    if (!validarCpf(formData.cpf)) {
-      alert("CPF inválido. Verifique os dados.");
-      return;
+  if (!validarCpf(formData.cpf)) {
+    alert("CPF inválido. Verifique os dados.");
+    return;
+  }
+
+  const payload = {
+    citizenName: formData.nome,
+    citizenCpf: formData.cpf.replace(/\D/g, ""),
+    citizenEmail: formData.email,
+    citizenTelePhone: formData.telefone,
+    citizenCep: cep,
+    citizenCity: formData.cidade,
+    availableSlotId: 2
+  };
+
+  try {
+    const resp = await fetch(
+      "https://sindrg-fca7a0fshugfgdar.brazilsouth-01.azurewebsites.net/api/appointments",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+      }
+    );
+
+    if (!resp.ok) {
+      throw new Error("Erro ao salvar agendamento");
     }
 
-
-    setAgendamentos([...agendamentos]);
+    const data = await resp.json();
+    console.log("Agendamento criado:", data);
 
     setShowSuccess(true);
     setTimeout(() => {
       setShowSuccess(false);
-      setCurrentView('home');
+      setCurrentView("home");
     }, 3000);
-  };
+  } catch (error) {
+    console.error(error);
+    alert("Falha ao salvar agendamento.");
+  }
+};
+
+
 
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -119,8 +153,7 @@ useEffect(() => {
           const data = await resp.json();
           const a = data.address || {};
           const cidade = a.city || a.town || a.village || a.municipality || "";
-          const uf = a.state || "";
-          const label = [cidade, uf].filter(Boolean).join(" - ") || "Cidade não detectada";
+          const label = (`${cidade} - BA`) || "Cidade não detectada";
           setPermLoc(true);
           setStatusLoc(null);
           setFormData((p) => ({ ...p, cidade: label }));
@@ -186,89 +219,18 @@ useEffect(() => {
       </>
     );
   }
+if (showInfoPopup) {
+  return (
+    <InfoPopup
+      canClose={canClosePopup}
+      onClose={handleClosePopup}
+    />
+  );
+}
 
-  if (showInfoPopup) {
-    return (
-      <>
-        <div className="popup-overlay">
-          <div className="popup-container">
-            <div className="popup-content">
-              <div className="popup-icon">
-                <FileText size={32} />
-              </div>
-              <h2 className="popup-title">Informações Importantes</h2>
-              <div className="popup-message">
-                <p className="popup-text">
-                  Para realizar seu agendamento, é necessário preencher <strong>todas as informações corretamente</strong>.
-                </p>
-                <p className="popup-text popup-highlight">
-                  O <strong>e-mail é de suma importância</strong> para confirmação e comunicação sobre seu agendamento.
-                </p>
-                <p className="popup-text">
-                  Permita a <strong>localização do seu dispositivo</strong> para facilitar o preenchimento da cidade.
-                </p>
-                <p className="popup-text">
-                  Certifique-se de que todos os dados estão corretos antes de confirmar.
-                </p>
-              </div>
-              <button
-                onClick={handleClosePopup}
-                disabled={!canClosePopup}
-                className={`popup-button ${canClosePopup ? 'popup-button-enabled' : 'popup-button-disabled'}`}
-              >
-                {canClosePopup ? 'OK, Entendi' : `Aguarde...`}
-              </button>
-              {!canClosePopup && (
-                <div className="popup-timer">
-                  <div className="timer-bar"></div>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      </>
-    );
-  }
-  
-  if (showTermsPopup) {
-    return (
-      <div className="popup-overlay">
-        <div className="popup-container">
-          <div className="popup-content">
-            <div className="popup-icon">
-              <FileText size={32} />
-            </div>
-            <h2 className="popup-title">Termos e Condições & LGPD</h2>
-
-            <div className="popup-message termos-texto">
-              <p>
-                Ao utilizar este sistema, você concorda com os{" "}
-                <strong>Termos e Condições</strong> de uso, que definem as regras
-                para utilização da plataforma, responsabilidades e limitações.
-              </p>
-              <p>
-                Em conformidade com a <strong>Lei Geral de Proteção de Dados (LGPD)</strong>,
-                seus dados pessoais serão coletados e tratados apenas para fins
-                relacionados ao agendamento de serviços, respeitando a
-                confidencialidade e segurança.
-              </p>
-              <p>
-                Você tem o direito de solicitar a correção, exclusão ou acesso aos
-                seus dados pessoais a qualquer momento, conforme previsto na lei.
-              </p>
-            </div>
-
-            <button
-              onClick={() => setShowTermsPopup(false)}
-              className="popup-button popup-button-enabled"
-            >
-              Li e Concordo
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
+if (showTermsPopup) {
+  return <TermsPopup onClose={() => setShowTermsPopup(false)} />;
+}
 
   return (
     <>
@@ -318,6 +280,7 @@ useEffect(() => {
                     required
                     className="form-input"
                     placeholder="(11) 99999-9999"
+                    maxLength={11}
                   />
                 </div>
 

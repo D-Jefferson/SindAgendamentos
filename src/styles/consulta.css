@@ -38,7 +38,7 @@
 
 .consultar-right {
   flex: 1;
-  background: #f5f7fa;
+  background: #8d7a7a;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -80,7 +80,7 @@
   gap: 0.4rem;
   background: none;
   border: none;
-  color: #dc2626;
+  color: #f8f8f8;
   cursor: pointer;
   font-size: 0.9rem;
   font-weight: 500;

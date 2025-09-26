@@ -1,11 +1,11 @@
 import React from 'react';
 import { AppProvider, useApp } from './contexts/AppContext';
-import { Header } from './components/Header';
-import { Menu } from './components/Menu';
-import { Home } from './components/Home';
-import { AgendarForm } from './components/AgendarForm';
-import { ConsultarAgendamentos } from './components/ConsultarAgendamentos';
-import { AdminLogin } from './components/AdminLogin';
+import { Header } from './pages/Header';
+import { Menu } from './pages/Menu';
+import { Home } from './pages/Home';
+import { AgendarForm } from './pages/Agendar';
+import { ConsultarAgendamentos } from './pages/Consultar';
+import { AdminLogin } from './pages/AdminLogin';
 //import { AdminPanel } from './components/AdminPanel';
 
 function AppContent() {
