@@ -11,7 +11,7 @@
 
 .consultar-left {
   flex: 1;
-    background-image: url('https://frotas.localiza.com/wp-content/uploads/maos-no-volante-dirigindo-carro-na-estrada.jpg');
+  background-image: url('https://frotas.localiza.com/wp-content/uploads/maos-no-volante-dirigindo-carro-na-estrada.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -38,10 +38,14 @@
 
 .consultar-right {
   flex: 1;
-  background: #8d7a7a;
+  background-image: url('https://img.grudado.com.br/media/catalog/product/p/a/papel-de-parede-neutro-tons-cinza-geometrico.jpg?width=700&height=700&store=default&image-type=images');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   display: flex;
   justify-content: center;
   align-items: center;
+  box-shadow: 10px 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .consultar-wrapper {

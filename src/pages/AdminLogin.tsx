@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Lock, User, Eye, EyeOff, ArrowLeft } from 'lucide-react';
 import { useApp } from '../contexts/AppContext';
 import '../styles/adminLogin.css';
+import { Route, Router } from 'react-router-dom';
 
 export function AdminLogin() {
   const { setCurrentView, setIsAdminLoggedIn } = useApp();
@@ -49,13 +50,6 @@ export function AdminLogin() {
         <div className="login-wrapper">
           <div className="login-card">
             <div className="login-header">
-              <button
-                onClick={() => setCurrentView('home')}
-                className="back-button"
-              >
-                <ArrowLeft size={20} />
-                <span>Voltar</span>
-              </button>
               <div className="login-icon">
                 <Lock size={32} />
               </div>

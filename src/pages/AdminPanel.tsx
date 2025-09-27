@@ -1,4 +1,4 @@
-/*import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { BarChart3, ArrowLeft, Calendar, TrendingUp, Users, FileText, LogOut } from 'lucide-react';
 import { useApp } from '../contexts/AppContext';
 
@@ -670,4 +670,4 @@ export function AdminPanel() {
       `}</style>
     </>
   );
-}*/
+}

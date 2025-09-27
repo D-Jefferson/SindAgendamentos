@@ -2,6 +2,7 @@ import React from "react";
 import { CheckCircle } from "lucide-react";
 import "../../styles/agendar.css";
 
+
 interface ConfirmacaoPopupProps {
   onClose: () => void;
   data: {
@@ -44,7 +45,7 @@ export default function ConfirmPopup({ onClose, data }: ConfirmacaoPopupProps) {
 
   return (
     <div className="popup-overlay">
-      <div className="popup-container popup-success">
+      <div className="popup-container-sucess popup-success">
         <div className="popup-content">
 
           <div className="popup-icon success-icon">

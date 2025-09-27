@@ -11,8 +11,33 @@ export function ConsultarAgendamentos() {
   const [agendamentosEncontrados, setAgendamentosEncontrados] = useState<any[]>([]);
   const [consultaRealizada, setConsultaRealizada] = useState(false);
 
-  const handleConsultar = (e: React.FormEvent) => {
+  const handleConsultar = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    try {
+        const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+        const response = await fetch(
+          `${API_BASE_URL}/api/consultation/request-code`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ cpf: cpf.replace(/\D/g, '') })
+          });
+
+      if (!response.ok) {
+        throw new Error('Erro ao solicitar código');
+      }
+
+      setAguardandoCodigo(true);
+    } catch (err) {
+      console.error(err);
+      alert('Não foi possível solicitar o código. Tente novamente.');
+    }
+  };
+
+  const [codigo, setCodigo] = useState('');
+
+  const handleConfirmarCodigo = () => {
     const resultados = agendamentos.filter(agendamento =>
       agendamento.telefone.includes(cpf.replace(/\D/g, '')) ||
       agendamento.nome.toLowerCase().includes(cpf.toLowerCase())
@@ -20,6 +45,8 @@ export function ConsultarAgendamentos() {
     setAgendamentosEncontrados(resultados);
     setConsultaRealizada(true);
   };
+
+
 
   const formatarCpf = (valor: string) => {
     const numeros = valor.replace(/\D/g, '');
@@ -31,6 +58,8 @@ export function ConsultarAgendamentos() {
     const cpfFormatado = formatarCpf(valor);
     setCpf(cpfFormatado);
   };
+
+  const [aguardandoCodigo, setAguardandoCodigo] = useState(false);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -89,7 +118,7 @@ export function ConsultarAgendamentos() {
             </div>
 
             <div className="consultar-body">
-              {!consultaRealizada ? (
+              {!consultaRealizada && !aguardandoCodigo ? (
                 <div className="consulta-form">
                   <form onSubmit={handleConsultar} className="form-consulta">
                     <div className="form-group-consulta">
@@ -117,7 +146,25 @@ export function ConsultarAgendamentos() {
                     </button>
                   </form>
                 </div>
-              ) : (
+                ) : aguardandoCodigo ? (
+                  <div className="inserir-codigo-container">
+                    <h2>Digite o código recebido</h2>
+                    <input
+                      type="text"
+                      value={codigo}
+                      onChange={(e) => setCodigo(e.target.value)}
+                      className="form-input-consulta"
+                      placeholder="Código"
+                    />
+                    <button
+                      onClick={handleConfirmarCodigo}
+                      className="consultar-button"
+                      disabled={codigo.length === 0}
+                    >
+                      Confirmar Código
+                    </button>
+                  </div>
+                ) : (
                 <div className="resultados-container">
                   <div className="resultados-header">
                     <h2 className="resultados-title">

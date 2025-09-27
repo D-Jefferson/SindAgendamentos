@@ -59,11 +59,35 @@ export function AgendarForm() {
   };
   
 
-  const horarios = [
-    '08:00', '08:30', '09:00', '09:30', '10:00', '10:30',
-    '11:00', '11:30', '14:00', '14:30', '15:00', '15:30',
-    '16:00', '16:30', '17:00', '17:30'
-  ];
+  const [horarios, setHorarios] = useState<{ slotId: number; time: string }[]>([]);
+
+  useEffect(() => {
+    const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+    const cidade = (formData.cidade || "").trim();
+    const servicePointId = servicePoints[cidade];
+
+    if (!formData.data || !servicePointId) return;
+
+    const buscarHorarios = async () => {
+      try {
+        const resp = await fetch(
+          `${API_BASE_URL}/api/available-slots?date=${formData.data}&servicePointId=${servicePointId}`
+        );
+        if (!resp.ok) {
+          setHorarios([]);
+          return;
+        }
+        const data = await resp.json();
+        setHorarios(data);
+      } catch (err) {
+        console.error("Erro ao carregar horários:", err);
+        setHorarios([]);
+      }
+    };
+
+    buscarHorarios();
+  }, [formData.data, formData.cidade]);
+
 
   React.useEffect(() => {
     if (showInfoPopup) {
@@ -267,7 +291,7 @@ if (showInfoPopup) {
 if (showTermsPopup) {
   return <TermsPopup onClose={() => setShowTermsPopup(false)} />;
 }
-
+const cidadeValida = formData.cidade && !statusLoc;
   return (
     <>
       <div className="form-container">
@@ -364,44 +388,7 @@ if (showTermsPopup) {
                   />
                 </div>
 
-              <div className="form-row">
-                <div className="form-group">
-                  <label className="form-label">
-                    <Calendar size={16} />
-                    <span>Data</span>
-                  </label>
-                  <input
-                    type="date"
-                    name="data"
-                    value={formData.data}
-                    onChange={handleChange}
-                    required
-                    min={new Date().toISOString().split('T')[0]}
-                    className="form-input"
-                  />
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label">
-                    <Clock size={16} />
-                    <span>Horário</span>
-                  </label>
-                  <select
-                    name="horario"
-                    value={formData.horario}
-                    onChange={handleChange}
-                    required
-                    className="form-select"
-                  >
-                    <option value="">Selecione um horário</option>
-                    {horarios.map((horario) => (
-                      <option key={horario} value={horario}>{horario}</option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              <div className="form-group">
+                              <div className="form-group">
                 <label className="form-label" htmlFor="cidade">
                   <MapPin size={16} />
                   <span>Cidade</span>
@@ -433,6 +420,55 @@ if (showTermsPopup) {
                     className="form-input"
                   />
                 )}
+              </div>
+
+              <div className="form-row">
+                <div className="form-group">
+                  <label className="form-label">
+                    <Calendar size={16} />
+                    <span>Data</span>
+                  </label>
+                    <input
+                      type="date"
+                      name="data"
+                      value={formData.data}
+                      onChange={handleChange}
+                      required
+                      min={new Date().toISOString().split('T')[0]}
+                      disabled={!cidadeValida}
+                      className={`form-input ${
+                        !cidadeValida ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""
+                      }`}
+                    />
+                </div>
+
+                <div className="form-group">
+                  <label className="form-label">
+                    <Clock size={16} />
+                    <span>Horário</span>
+                  </label>
+                    <select
+                      name="horario"
+                      value={formData.horario}
+                      onChange={handleChange}
+                      required
+                      disabled={!cidadeValida}
+                      className={`form-select ${
+                        !cidadeValida ? "bg-gray-200 text-gray-500 cursor-not-allowed" : ""
+                      }`}
+                    >
+                      <option value="">Selecione um horário</option>
+                      {horarios.length > 0 ? (
+                        horarios.map((h) => (
+                          <option key={h.slotId} value={h.time}>
+                            {h.time}
+                          </option>
+                        ))
+                      ) : (
+                        <option disabled>Nenhum horário disponível</option>
+                      )}
+                    </select>
+                </div>
               </div>
 
               <div className="form-group checkbox-termos">
