@@ -4,7 +4,7 @@ import { useApp } from '../contexts/AppContext';
 import '../styles/agendar.css';
 import InfoPopup from "../components/Popup/InfoPopup";
 import TermsPopup from "../components/Popup/TermosPopup"; 
-
+import ConfirmPopup from "../components/Popup/ConfirmPopup"; 
 
 const somenteDigitos = (v: string) => v.replace(/\D/g, "");
 
@@ -32,8 +32,10 @@ export const validarCpf = (cpf: string) => {
 
 export function AgendarForm() {
   const [aceitouTermos, setAceitouTermos] = useState(false);
-  const { setCurrentView, agendamentos, setAgendamentos } = useApp();
-  const [showSuccess, setShowSuccess] = useState(false);
+  const { setCurrentView } = useApp();
+  const [confirmationData, setConfirmationData] = useState<any | null>(null);
+  const [showErrorPopup, setShowErrorPopup] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [showInfoPopup, setShowInfoPopup] = useState(true);
   const [showTermsPopup, setShowTermsPopup] = useState(false);
   const [canClosePopup, setCanClosePopup] = useState(false);
@@ -46,6 +48,16 @@ export function AgendarForm() {
     horario: '',
     cidade: ''
   });
+
+  const cidadefill = (formData.cidade || "").trim();
+  const servicePoints: Record<string, number> = {
+    "Salvador - BA": 1,
+    "Feira de Santana - BA": 2,
+    "Vitória da Conquista - BA": 3,
+    "XiqueXique - BA": 4,
+    "Lauro de Freitas - BA": 5
+  };
+  
 
   const horarios = [
     '08:00', '08:30', '09:00', '09:30', '10:00', '10:30',
@@ -76,14 +88,17 @@ export function AgendarForm() {
     citizenCpf: formData.cpf.replace(/\D/g, ""),
     citizenEmail: formData.email,
     citizenTelePhone: formData.telefone,
-    citizenCep: cep,
+    citizenCep: cep.replace(/\D/g, ""),
     citizenCity: formData.cidade,
-    availableSlotId: 2
+    desiredDateTime: `${formData.data}T${formData.horario}:00Z`,
+    servicePointId: servicePoints[cidadefill]
   };
+  
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL; 
 
   try {
-    const resp = await fetch(
-      "https://sindrg-fca7a0fshugfgdar.brazilsouth-01.azurewebsites.net/api/appointments",
+      const resp = await fetch(
+        `${API_BASE_URL}/api/appointments/by-date`,
       {
         method: "POST",
         headers: {
@@ -94,20 +109,27 @@ export function AgendarForm() {
     );
 
     if (!resp.ok) {
-      throw new Error("Erro ao salvar agendamento");
+      const errorData = await resp.json();
+      const message = errorData.message || "Erro desconhecido. Tente novamente.";
+      setErrorMessage(message);
+      setShowErrorPopup(true);
+    return;
     }
 
-    const data = await resp.json();
-    console.log("Agendamento criado:", data);
+  const data = await resp.json();
+  console.log("Agendamento criado:", data);
+  setConfirmationData(payload);
 
-    setShowSuccess(true);
-    setTimeout(() => {
-      setShowSuccess(false);
-      setCurrentView("home");
-    }, 3000);
-  } catch (error) {
-    console.error(error);
-    alert("Falha ao salvar agendamento.");
+
+
+  } catch (error: any) {
+  console.error(error);
+  const message =
+    error?.response?.data?.message ||
+    error?.message ||
+    "Erro desconhecido. Tente novamente.";
+  setErrorMessage(message);
+  setShowErrorPopup(true);
   }
 };
 
@@ -201,24 +223,38 @@ useEffect(() => {
     })();
   }, [cep, setFormData]);
 
-  if (showSuccess) {
+  if (confirmationData) {
     return (
-      <>
-        <div className="success-container">
-          <div className="success-card">
-            <div className="success-icon">
-              <Check className="check-icon" />
-            </div>
-            <h2 className="success-title">Agendamento Confirmado!</h2>
-            <p className="success-message">
-              Seu agendamento foi realizado com sucesso. Você receberá uma confirmação em breve.
-            </p>
-            <p className="success-redirect">Redirecionando...</p>
-          </div>
-        </div>
-      </>
+      <ConfirmPopup
+        data={confirmationData}
+        onClose={() => setConfirmationData(null)}
+      />
     );
   }
+
+
+  if (showErrorPopup) {
+    return (
+      <div className="popup-overlay">
+        <div className="popup-container">
+          <div className="popup-content">
+            <h2 className="popup-title">Falha no agendamento</h2>
+            <p className="popup-text">
+              {errorMessage || "Não foi possível concluir o agendamento. Tente novamente."}
+            </p>
+            <button
+              onClick={() => setShowErrorPopup(false)}
+              className="popup-button popup-button-enabled"
+            >
+              Fechar
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+
 if (showInfoPopup) {
   return (
     <InfoPopup
